@@ -94,8 +94,8 @@ public:
   }
 
 private:
-  int* mode_;
   std::string name_;
+  int* mode_;
 };
 
 /** \brief Hardware interface to support changing between control modes
