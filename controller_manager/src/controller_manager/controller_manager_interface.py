@@ -65,7 +65,7 @@ def load_controller(name):
     s = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
     resp = s.call(LoadControllerRequest(name))
     if resp.ok:
-        print "Loaded", name
+        print "controller_manager_interface: Loaded", name
         return True
     else:
         print "Error when loading", name
