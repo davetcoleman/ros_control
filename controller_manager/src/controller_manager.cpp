@@ -473,9 +473,9 @@ bool ControllerManager::reloadControllerLibrariesSrv(
   controller_manager_msgs::ReloadControllerLibraries::Response &resp)
 {
   // lock services
-  ROS_DEBUG("reload libraries service called");
+  ROS_DEBUG_NAMED("service","reload libraries service called");
   boost::mutex::scoped_lock guard(services_lock_);
-  ROS_DEBUG("reload libraries service locked");
+  ROS_DEBUG_NAMED("service","reload libraries service locked");
 
   // only reload libraries if no controllers are running
   std::vector<std::string> controllers;
@@ -516,7 +516,7 @@ bool ControllerManager::reloadControllerLibrariesSrv(
 
   resp.ok = true;
 
-  ROS_DEBUG("reload libraries service finished");
+  ROS_DEBUG_NAMED("service","reload libraries service finished");
   return true;
 }
 
@@ -529,9 +529,9 @@ bool ControllerManager::listControllerTypesSrv(
   (void) req;
 
   // lock services
-  ROS_DEBUG("list types service called");
+  ROS_DEBUG_NAMED("service","list types service called");
   boost::mutex::scoped_lock guard(services_lock_);
-  ROS_DEBUG("list types service locked");
+  ROS_DEBUG_NAMED("service","list types service locked");
 
   for(std::list<LoaderPtr>::iterator it = controller_loaders_.begin(); it != controller_loaders_.end(); ++it)
   {
@@ -543,7 +543,7 @@ bool ControllerManager::listControllerTypesSrv(
     }
   }
 
-  ROS_DEBUG("list types service finished");
+  ROS_DEBUG_NAMED("service","list types service finished");
   return true;
 }
 
@@ -556,9 +556,9 @@ bool ControllerManager::listControllersSrv(
   (void) req;
 
   // lock services
-  ROS_DEBUG("list controller service called");
+  ROS_DEBUG_NAMED("service","list controller service called");
   boost::mutex::scoped_lock services_guard(services_lock_);
-  ROS_DEBUG("list controller service locked");
+  ROS_DEBUG_NAMED("service","list controller service locked");
 
   // lock controllers to get all names/types/states
   boost::recursive_mutex::scoped_lock controller_guard(controllers_lock_);
@@ -582,7 +582,7 @@ bool ControllerManager::listControllersSrv(
       cs.state = "stopped";
   }
 
-  ROS_DEBUG("list controller service finished");
+  ROS_DEBUG_NAMED("service","list controller service finished");
   return true;
 }
 
@@ -592,13 +592,13 @@ bool ControllerManager::loadControllerSrv(
   controller_manager_msgs::LoadController::Response &resp)
 {
   // lock services
-  ROS_DEBUG("loading service called for controller %s ",req.name.c_str());
+  ROS_DEBUG_NAMED("service","loading service called for controller %s ",req.name.c_str());
   boost::mutex::scoped_lock guard(services_lock_);
-  ROS_DEBUG("loading service locked");
+  ROS_DEBUG_NAMED("service","loading service locked");
 
   resp.ok = loadController(req.name);
 
-  ROS_DEBUG("loading service finished for controller %s ",req.name.c_str());
+  ROS_DEBUG_NAMED("service","loading service finished for controller %s ",req.name.c_str());
   return true;
 }
 
@@ -608,13 +608,13 @@ bool ControllerManager::unloadControllerSrv(
   controller_manager_msgs::UnloadController::Response &resp)
 {
   // lock services
-  ROS_DEBUG("unloading service called for controller %s ",req.name.c_str());
+  ROS_DEBUG_NAMED("service","unloading service called for controller %s ",req.name.c_str());
   boost::mutex::scoped_lock guard(services_lock_);
-  ROS_DEBUG("unloading service locked");
+  ROS_DEBUG_NAMED("service","unloading service locked");
 
   resp.ok = unloadController(req.name);
 
-  ROS_DEBUG("unloading service finished for controller %s ",req.name.c_str());
+  ROS_DEBUG_NAMED("service","unloading service finished for controller %s ",req.name.c_str());
   return true;
 }
 
@@ -624,13 +624,13 @@ bool ControllerManager::switchControllerSrv(
   controller_manager_msgs::SwitchController::Response &resp)
 {
   // lock services
-  ROS_DEBUG("switching service called");
+  ROS_DEBUG_NAMED("service","switching service called");
   boost::mutex::scoped_lock guard(services_lock_);
-  ROS_DEBUG("switching service locked");
+  ROS_DEBUG_NAMED("service","switching service locked");
 
   resp.ok = switchController(req.start_controllers, req.stop_controllers, req.strictness);
 
-  ROS_DEBUG("switching service finished");
+  ROS_DEBUG_NAMED("service","switching service finished");
   return true;
 }
 
