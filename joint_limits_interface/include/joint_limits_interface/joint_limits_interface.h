@@ -111,6 +111,39 @@ public:
     }
 
     const double cmd = internal::saturate(jh_.getCommand(), min_pos, max_pos);
+
+    // Optional helper code for debugging, not realtime safe ----------
+#define USE_JOINT_LIMIT_DEBUG // Show warnings when joint limits exceeded
+#ifdef USE_JOINT_LIMIT_DEBUG
+    //static bool shutdown = false;
+    //if (shutdown)
+      //exit(-1);
+    if (fabs(cmd - jh_.getCommand()) > std::numeric_limits<double>::epsilon())
+    {
+      std::cout << std::endl;
+      std::cout << "-------------------------------------------------------" << std::endl;
+      // Determine if velocity or position is what limited us
+      if (min_pos != min_pos_limit_)
+        std::cout << "MIN VEL LIMIT ";
+      else if (max_pos != max_pos_limit_)
+        std::cout << "MAX VEL LIMIT ";
+      else
+        std::cout << "POSITION LIMIT ";
+
+      // Limit violation details
+      double calc_velocity = (jh_.getCommand() - prev_cmd_) / period.toSec();
+      std::cout << jh_.getName() << " pos_original: " << jh_.getCommand() << " pos_new: " << cmd
+                << " pos_adj_diff: " << fabs(jh_.getCommand() - cmd)
+                << " allowed_pos_delta: " << (limits_.max_velocity * period.toSec())
+                << " calc_vel: " << calc_velocity
+                << std::endl;
+      std::cout << "-------------------------------------------------------" << std::endl;
+
+      //shutdown = true;
+    }
+#endif
+    // ----------------------------------------------------
+
     jh_.setCommand(cmd);
     prev_cmd_ = cmd;
   }
@@ -240,6 +273,22 @@ public:
     const double pos_cmd = saturate(jh_.getCommand(),
                                     pos_low,
                                     pos_high);
+
+
+    // Optional helper code for debugging, not realtime safe ----------
+#ifdef USE_JOINT_LIMIT_DEBUG
+    if (pos_cmd != jh_.getCommand())
+    {
+      // Limit violation details
+      std::cout << jh_.getName() << " soft limits position - original: " << jh_.getCommand()
+                << " new: " << pos_cmd
+                << " diff: " << jh_.getCommand() - pos_cmd
+                << std::endl;
+    }
+#endif
+    // ----------------------------------------------------
+
+
     jh_.setCommand(pos_cmd);
 
     // Cache variables
